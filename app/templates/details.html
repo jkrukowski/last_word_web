@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Last Word Deatils</title>
+</head>
+<body>
+  {% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+  {% endfor %}
+  <ul class=entries>
+  {% for item in result %}
+    <li>
+        <h2>{{ item.index }}</h2>
+        <h3>{{ item.value }}</h3>
+        <h4>{{ item.data.stm }}</h4>
+  {% else %}
+    <li><em>No entries!</em>
+  {% endfor %}
+  </ul>
+</body>
+</html>
