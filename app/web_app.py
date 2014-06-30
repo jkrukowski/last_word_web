@@ -3,11 +3,14 @@ from collections import namedtuple
 from gensim import corpora, models, similarities
 from textblob import TextBlob
 import pandas as pd
+import nltk
 from flask import Flask, request, g, flash, jsonify, render_template
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 Data = namedtuple('Data', 'matrix model dictionary data_frame')
+
+nltk.data.path.append(os.path.join(app.root_path, 'nltk_data/'))
 
 app.config.update(dict(
     DEBUG=True,
