@@ -10,7 +10,7 @@ from flask import Flask, request, g, flash, jsonify, render_template
 app = Flask(__name__)
 app.config.from_object(__name__)
 Data = namedtuple('Data', 'matrix model dictionary data_frame')
-
+DF_COLUMNS = ['age', 'county', 'date', 'info_link', 'name', 'no', 'race', 'stm', 'stm_link', 'surename']
 nltk.data.path.append(os.path.join(app.root_path, 'nltk_data/'))
 
 app.config.update(dict(
@@ -49,7 +49,7 @@ def get_data():
 
 
 def get_record(index, df):
-    return df.loc[index].to_dict()
+    return df.loc[index, DF_COLUMNS].to_dict()
 
 
 def parse_input(input_data, dictionary, model):
@@ -74,7 +74,7 @@ def get_similar(vec_model, matrix, df):
     :return: sorted list of similar documents
     """
     sims = matrix[vec_model]
-    result = [Result(index=index, value=float(val), data=get_record(index, df)) for index, val in enumerate(sims)]
+    result = [Result(get_record(index, df), index=index, value=float(val)) for index, val in enumerate(sims)]
     return sorted(result, key=lambda x: -x.value)
 
 

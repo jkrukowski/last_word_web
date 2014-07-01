@@ -1,15 +1,9 @@
 
 class Result(object):
 
-    def __init__(self, index, value, data):
-        self.index = index
-        self.value = value
-        self._data = data
-
-    @property
-    def data(self):
-        return self._data
-
-    @data.setter
-    def data(self, value):
-        self._data = value
+    def __init__(self, *initial_data, **kwargs):
+        for dictionary in initial_data:
+            for key in dictionary:
+                setattr(self, key, dictionary[key])
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
