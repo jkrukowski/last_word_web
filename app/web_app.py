@@ -74,7 +74,7 @@ def get_similar(vec_model, matrix, df):
     :return: sorted list of similar documents
     """
     sims = matrix[vec_model]
-    result = [Result(get_record(index, df), index=index, value=float(val)) for index, val in enumerate(sims)]
+    result = [Result(get_record(index, df), index=index, value=round(float(val), 3)) for index, val in enumerate(sims)]
     return sorted(result, key=lambda x: -x.value)
 
 
