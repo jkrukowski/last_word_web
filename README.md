@@ -1,4 +1,4 @@
-last_word_web
-=============
+Last Word Database
+==================
 
-Last Word Web Interface
+Database of last words of every inmate executed in Texas since 1984

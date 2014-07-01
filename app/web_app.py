@@ -4,6 +4,7 @@ from gensim import corpora, models, similarities
 from textblob import TextBlob
 import pandas as pd
 import nltk
+from result import Result
 from flask import Flask, request, g, flash, jsonify, render_template
 
 app = Flask(__name__)
@@ -69,11 +70,12 @@ def get_similar(vec_model, matrix, df):
     Get similar documents
     :param vec_model: user input tranfsormed by gensim model
     :param matrix: gensim similarity matrix
+    :param df: pandas data frame with data
     :return: sorted list of similar documents
     """
     sims = matrix[vec_model]
-    result = [{'index': index, 'value': float(item), 'data': get_record(index, df)} for index, item in enumerate(sims)]
-    return sorted(result, key=lambda x: -x['value'])
+    result = [Result(index=index, value=float(val), data=get_record(index, df)) for index, val in enumerate(sims)]
+    return sorted(result, key=lambda x: -x.value)
 
 
 @app.errorhandler(404)
