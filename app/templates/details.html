@@ -8,18 +8,37 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 </head>
 <body>
-  {% for message in get_flashed_messages() %}
-  <div class=flash>{{ message }}</div>
-  {% endfor %}
-  <ul class=entries>
-  {% for item in result %}
-    <li>
-        <h2>{{ item.index }}</h2>
-        <h3>{{ item.value }}</h3>
-        <h4>{{ item.stm }}</h4>
-  {% else %}
-    <li><em>No entries!</em>
-  {% endfor %}
-  </ul>
+    <dl class="dl-horizontal">
+        <dt>Query</dt>
+        <dd>{{ user_input }}</dd>
+    </dl>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Statement</th>
+                <th>Age</th>
+                <th>Race</th>
+                <th>Date</th>
+                <th>Details Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for index, item in enumerate(result) %}
+            <tr>
+                <td>{{ index + 1 }}</td>
+                <td>{{ item.surename }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.stm[:20] }}</td>
+                <td>{{ item.age }}</td>
+                <td>{{ item.race }}</td>
+                <td>{{ item.date }}</td>
+                <td>{{ item.info_link }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>
