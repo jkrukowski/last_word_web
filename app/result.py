@@ -1,7 +1,7 @@
 
 format_map = {
     'date': lambda x: x.date(),
-    'score': lambda x: "{:.3f}".format(x)
+    'value': lambda x: "{:.3f}".format(x)
 }
 
 
