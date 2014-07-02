@@ -1,6 +1,7 @@
 
 format_map = {
-    'date': lambda x: x.date()
+    'date': lambda x: x.date(),
+    'stm': lambda x: x[:50] + '...' if len(x) > 50 else x
 }
 
 
