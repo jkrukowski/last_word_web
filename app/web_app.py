@@ -1,29 +1,9 @@
-import os
-from collections import namedtuple
 from gensim import corpora, models, similarities
 from textblob import TextBlob
 import pandas as pd
-import nltk
 from result import Result
-from flask import Flask, request, g, flash, jsonify, render_template
-
-app = Flask(__name__)
-app.config.from_object(__name__)
-Data = namedtuple('Data', 'matrix model dictionary data_frame')
-DF_COLUMNS = ['age', 'county', 'date', 'info_link', 'name', 'no', 'race', 'stm', 'stm_link', 'surename']
-nltk.data.path.append(os.path.join(app.root_path, 'nltk_data/'))
-
-app.config.update(dict(
-    DEBUG=True,
-    SECRET_KEY='\xbe\xf5`\xd7\xb0\xab\x93K;<\xccW\xb7q+\xbd\x1f\xfb\xd7\x95\x8e\xcb\x1e\xb3',
-    USERNAME='admin',
-    PASSWORD='default',
-    MATRIX=os.path.join(app.root_path, 'data/lsi.matrix'),
-    MODEL=os.path.join(app.root_path, 'data/lsi.model'),
-    DATA_FRAME=os.path.join(app.root_path, 'data/data.pkl'),
-    DICTIONARY=os.path.join(app.root_path, 'data/dictionary.dict')
-))
-app.config.from_envvar('FLASKR_SETTINGS', silent=True)
+from flask import request, g, flash, jsonify, render_template
+from settings import app, Data, DF_COLUMNS
 
 
 def load_data():
