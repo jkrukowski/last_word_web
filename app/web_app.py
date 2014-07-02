@@ -56,7 +56,7 @@ def get_similar(vec_model, matrix, df):
     sims = matrix[vec_model]
     result = [Result(get_record(index, df),
                      index=index,
-                     value=round(float(val), 3)) for index, val in enumerate(sims) if val > 0.001]
+                     value=float(val)) for index, val in enumerate(sims) if val > 0.001]
     return sorted(result, key=lambda x: -x.value)
 
 
