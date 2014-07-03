@@ -62,7 +62,7 @@ def get_similar(vec_model, matrix, df):
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return jsonify({'status': 1, 'description': error.description})
+    return render_template('404.html', error_url=request.url)
 
 
 @app.route('/query')
@@ -71,7 +71,6 @@ def user_query():
     user_input = request.args.get('q')
     vec_parsed = parse_input(user_input, data.dictionary, data.model)
     result = get_similar(vec_parsed, data.matrix, data.data_frame)
-    flash('successful query')
     if not result:
         return render_template('empty.html', user_input=user_input)
     else:
@@ -80,7 +79,6 @@ def user_query():
 
 @app.route('/inmate/<int:inmate_id>')
 def inmate_details(inmate_id):
-    flash(str(inmate_id))
     return render_template('single-inmate.html')
 
 
