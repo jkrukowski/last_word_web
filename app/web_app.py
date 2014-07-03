@@ -73,7 +73,7 @@ def user_query():
     result = get_similar(vec_parsed, data.matrix, data.data_frame)
     flash('successful query')
     if not result:
-        return render_template('empty.html')
+        return render_template('empty.html', user_input=user_input)
     else:
         return render_template('details.html', result=result, user_input=user_input)
 
