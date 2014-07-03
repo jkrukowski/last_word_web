@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="page-header">
+    <h1>Last Words <small>of every inmate executed in Texas since 1984</small></h1>
+</div>
+<p class="lead">Results for: <strong>{{ user_input }}</strong></p>
+<p class="bg-info">No results, <a href="{{ url_for('main_page') }}">take me back</a></p>
+{% endblock %}

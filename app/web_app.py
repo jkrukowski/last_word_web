@@ -72,7 +72,10 @@ def user_query():
     vec_parsed = parse_input(user_input, data.dictionary, data.model)
     result = get_similar(vec_parsed, data.matrix, data.data_frame)
     flash('successful query')
-    return render_template('details.html', result=result, user_input=user_input)
+    if not result:
+        return render_template('empty.html')
+    else:
+        return render_template('details.html', result=result, user_input=user_input)
 
 
 @app.route('/inmate/<int:inmate_id>')
