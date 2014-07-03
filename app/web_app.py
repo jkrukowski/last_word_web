@@ -76,7 +76,7 @@ def user_query():
 
 
 @app.route('/inmate/<int:inmate_id>')
-def inmate_details():
+def inmate_details(inmate_id):
     flash(str(inmate_id))
     return render_template('single-inmate.html')
 
