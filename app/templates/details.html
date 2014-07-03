@@ -20,10 +20,11 @@
                     <th>Last Name</th>
                     <th>First Name</th>
                     <th>Statement</th>
+                    <th class="text-center">Full Statement</th>
                     <th>Age</th>
                     <th>Race</th>
                     <th>Date</th>
-                    <th class="text-center">Details</th>
+                    <th class="text-center">Inmate Details</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,6 +34,7 @@
                     <td>{{ item.surename }}</td>
                     <td>{{ item.name }}</td>
                     <td>{{ item.stm }}</td>
+                    <td class="text-center"><a href="{{ url_for('inmate_details', inmate_id=item.index) }}"><span class="glyphicon glyphicon-file"></span></a></td>
                     <td>{{ item.age }}</td>
                     <td>{{ item.race }}</td>
                     <td>{{ item.date }}</td>

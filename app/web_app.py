@@ -75,6 +75,12 @@ def user_query():
     return render_template('details.html', result=result, user_input=user_input)
 
 
+@app.route('/inmate/<int:inmate_id>')
+def inmate_details():
+    flash(str(inmate_id))
+    return render_template('single-inmate.html')
+
+
 @app.route('/')
 def main_page():
     return render_template('main.html')
