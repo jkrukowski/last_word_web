@@ -79,7 +79,13 @@ def user_query():
 
 @app.route('/inmate/<int:inmate_id>')
 def inmate_details(inmate_id):
-    return render_template('single-inmate.html')
+    data = get_data()
+    user_input = request.args.get('q')
+    try:
+        item = get_record(inmate_id, data.data_frame)
+        return render_template('single-inmate.html', item=item)
+    except KeyError as e:
+        return render_template('empty.html', user_input=user_input)
 
 
 @app.route('/')

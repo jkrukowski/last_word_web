@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 Data = namedtuple('Data', 'matrix model dictionary data_frame')
 nltk.data.path.append(os.path.join(app.root_path, 'nltk_data/'))
-DF_COLUMNS = ['age', 'county', 'date', 'info_link', 'name', 'no', 'race', 'stm', 'stm_link', 'surename']
+DF_COLUMNS = ['age', 'county', 'date', 'info_link', 'name', 'no', 'race', 'stm', 'stm_link', 'surename', 'county']
 
 app.config.update(dict(
     DEBUG=True,
