@@ -1,9 +1,10 @@
 from gensim import corpora, models, similarities
 from textblob import TextBlob
 import pandas as pd
-from result import Result
-from flask import request, g, url_for, redirect, render_template, session
+from result import merge_data
+from flask import request, g, escape, redirect, render_template, session, abort
 from settings import app, Data, DF_COLUMNS
+import sys
 
 
 def load_data():
@@ -32,6 +33,15 @@ def get_record(index, df):
     return df.loc[index, DF_COLUMNS].to_dict()
 
 
+def get_inmate(inmate_id):
+    try:
+        data = get_data()
+        item = get_record(inmate_id, data.data_frame)
+    except KeyError as e:
+        item = None
+    return item
+
+
 def parse_input(input_data, dictionary, model):
     """
     Parses and transforms user input
@@ -54,10 +64,10 @@ def get_similar(vec_model, matrix, df):
     :return: sorted list of similar documents
     """
     sims = matrix[vec_model]
-    result = [Result(get_record(index, df),
-                     index=index,
-                     value=float(val)) for index, val in enumerate(sims) if val > 0.001]
-    return sorted(result, key=lambda x: -x.value)
+    result = [merge_data(get_record(index, df),
+                         index=index,
+                         value=float(val)) for index, val in enumerate(sims) if val > 0.001]
+    return sorted(result, key=lambda x: -x['value'])
 
 
 @app.errorhandler(404)
@@ -71,9 +81,7 @@ def user_query():
     user_input = request.args.get('q')
     vec_parsed = parse_input(user_input, data.dictionary, data.model)
     result = get_similar(vec_parsed, data.matrix, data.data_frame)
-
     # store session data
-    session['result'] = result
     session['user_input'] = user_input
 
     if not result:
@@ -84,12 +92,14 @@ def user_query():
 
 @app.route('/inmate/<int:inmate_id>')
 def inmate_details(inmate_id):
-    data = get_data()
-    try:
-        item = get_record(inmate_id, data.data_frame)
-        return render_template('single-inmate.html', item=item, user_input=session['user_input'])
-    except KeyError as e:
-        return redirect(url_for('page_not_found', error=e))
+    item = get_inmate(inmate_id)
+    user_input = None
+    if 'user_input' in session:
+        user_input = session['user_input']
+    if item:
+        return render_template('single-inmate.html', item=item, user_input=user_input)
+    else:
+        return abort(404)
 
 
 @app.route('/')

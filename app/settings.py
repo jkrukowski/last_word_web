@@ -12,7 +12,7 @@ DF_COLUMNS = ['age', 'county', 'date', 'info_link', 'name', 'no', 'race', 'stm',
 
 app.config.update(dict(
     DEBUG=True,
-    SECRET_KEY='\xbe\xf5`\xd7\xb0\xab\x93K;<\xccW\xb7q+\xbd\x1f\xfb\xd7\x95\x8e\xcb\x1e\xb3',
+    SECRET_KEY='\x00\x8ex\x06*BV\xba\x93\x9d-\x9e\xe9\x844\xaa-\xb7\x81&i\xcbJu',
     USERNAME='admin',
     PASSWORD='default',
     MATRIX=os.path.join(app.root_path, 'data/lsi.matrix'),
