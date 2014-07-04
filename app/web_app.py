@@ -2,7 +2,7 @@ from gensim import corpora, models, similarities
 from textblob import TextBlob
 import pandas as pd
 from result import Result
-from flask import request, g, flash, jsonify, render_template
+from flask import request, g, url_for, redirect, render_template
 from settings import app, Data, DF_COLUMNS
 
 
@@ -83,9 +83,9 @@ def inmate_details(inmate_id):
     user_input = request.args.get('q')
     try:
         item = get_record(inmate_id, data.data_frame)
-        return render_template('single-inmate.html', item=item)
+        return render_template('single-inmate.html', item=item, user_input=user_input)
     except KeyError as e:
-        return render_template('empty.html', user_input=user_input)
+        return redirect(url_for('page_not_found'))
 
 
 @app.route('/')
