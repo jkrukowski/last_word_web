@@ -2,7 +2,7 @@ from gensim import corpora, models, similarities
 from textblob import TextBlob
 import pandas as pd
 from result import Result
-from flask import request, g, url_for, redirect, render_template
+from flask import request, g, url_for, redirect, render_template, session
 from settings import app, Data, DF_COLUMNS
 
 
@@ -71,6 +71,11 @@ def user_query():
     user_input = request.args.get('q')
     vec_parsed = parse_input(user_input, data.dictionary, data.model)
     result = get_similar(vec_parsed, data.matrix, data.data_frame)
+
+    # store session data
+    session['result'] = result
+    session['user_input'] = user_input
+
     if not result:
         return render_template('empty.html', user_input=user_input)
     else:
@@ -80,12 +85,11 @@ def user_query():
 @app.route('/inmate/<int:inmate_id>')
 def inmate_details(inmate_id):
     data = get_data()
-    user_input = request.args.get('q')
     try:
         item = get_record(inmate_id, data.data_frame)
-        return render_template('single-inmate.html', item=item, user_input=user_input)
+        return render_template('single-inmate.html', item=item, user_input=session['user_input'])
     except KeyError as e:
-        return redirect(url_for('page_not_found'))
+        return redirect(url_for('page_not_found', error=e))
 
 
 @app.route('/')

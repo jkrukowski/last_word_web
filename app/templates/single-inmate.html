@@ -1,17 +1,15 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="page-header">
-    <div class="col-md-9">
-        <h1>Last Words <small>of every inmate executed in Texas since 1984</small></h1>
-    </div>
-    <div class="col-md-3 text-right">
-        <a class="btn btn-default" href="{{ url_for('main_page') }}" role="button">New query</a>
-    </div>
+    <h1>Last Words <small>of every inmate executed in Texas since 1984</small></h1>
 </div>
-<p class="lead">Results for: <strong>{{ user_input }}</strong></p>
+<div class="row">
+    <div class="col-md-8"><p class="lead">Results for: <strong>{{ user_input }}</strong></p></div>
+    <div class="col-md-4 text-right"><a class="btn btn-default" href="{{ url_for('main_page') }}" role="button">New query</a></div>
+</div>
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h2 class="panel-title">{{ item.name }} {{ item.surename }}</h2>
+        <h1 class="panel-title">{{ item.name }} {{ item.surename }}</h1>
     </div>
     <div class="panel-body">
         <dl class="dl-horizontal">
