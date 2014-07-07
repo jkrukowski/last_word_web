@@ -4,7 +4,24 @@ import pandas as pd
 from result import merge_data
 from flask import request, g, escape, redirect, render_template, session, abort
 from settings import app, Data, DF_COLUMNS
-import sys
+import numpy as np
+
+
+def plot_data():
+    data = get_data()
+    race_series = data.data_frame.groupby('race').size()
+    race_series.order(inplace=True)
+
+    lab1 = race_series.index.tolist()
+    val1 = race_series.tolist()
+    val2, lab2 = np.histogram(data.data_frame.age, bins=[0, 25, 35, 45, 55, 65, 100])
+    val3, lab3 = np.histogram(data.data_frame.year, bins=[0, 1985, 1990, 1995, 2000, 2005, 2010, 2015])
+
+    return {
+        'race': {'lab': lab1, 'val': val1},
+        'age': {'lab': ['..25', '26..35', '36..45', '46..55', '56..65', '66..'], 'val': val2.tolist()},
+        'year': {'lab': ['..85', '86..90', '91..95', '96..00', '01..05', '06..10', '11..15'], 'val': val3.tolist()}
+    }
 
 
 def load_data():
@@ -16,6 +33,7 @@ def load_data():
     matrix = similarities.MatrixSimilarity.load(app.config['MATRIX'])
     model = models.LsiModel.load(app.config['MODEL'])
     df = pd.read_pickle(app.config['DATA_FRAME'])
+    df['year'] = df.date.apply(lambda x: x.year)
     return Data(matrix=matrix, model=model, dictionary=dictionary, data_frame=df)
 
 
@@ -27,6 +45,12 @@ def get_data():
     if not hasattr(g, 'data'):
         g.data = load_data()
     return g.data
+
+
+def get_plot_data():
+    if not hasattr(g, 'plot_data'):
+        g.plot_data = plot_data()
+    return g.plot_data
 
 
 def get_record(index, df):
@@ -104,4 +128,5 @@ def inmate_details(inmate_id):
 
 @app.route('/')
 def main_page():
-    return render_template('main.html')
+    pdata = get_plot_data()
+    return render_template('main.html', race_plot=pdata['race'], age_plot=pdata['age'], year_plot=pdata['year'])

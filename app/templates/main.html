@@ -13,4 +13,77 @@
         <button type="submit" class="btn btn-default">Search</button>
     </div>
 </form>
+<div class="row">
+    <div class="col-md-4">
+        <h4>Inmate Race Distribution</h4>
+        <canvas id="firstChart" width="360" height="360"></canvas>
+    </div>
+    <div class="col-md-4">
+        <h4>Inmate Age Distribution</h4>
+        <canvas id="secondChart" width="360" height="360"></canvas>
+    </div>
+    <div class="col-md-4">
+        <h4>Executions By Year</h4>
+        <canvas id="thirdChart" width="360" height="360"></canvas>
+    </div>
+</div>
+<script>
+var data = {
+    labels: {{ race_plot.lab|tojson|safe }},
+    datasets: [
+        {
+            label: "Race Distribution",
+            fillColor: "rgba(220,220,220,0.2)",
+            strokeColor: "rgba(220,220,220,1)",
+            pointColor: "rgba(220,220,220,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(220,220,220,1)",
+            data: {{ race_plot.val|tojson|safe }}
+        }
+    ]
+};
+var options = { };
+var ctx = document.getElementById("firstChart").getContext("2d");
+var myLineChart = new Chart(ctx).Bar(data, options);
+
+var data2 = {
+    labels: {{ age_plot.lab|tojson|safe }},
+    datasets: [
+        {
+            label: "Age Distribution",
+            fillColor: "rgba(220,220,220,0.2)",
+            strokeColor: "rgba(220,220,220,1)",
+            pointColor: "rgba(220,220,220,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(220,220,220,1)",
+            data: {{ age_plot.val|tojson|safe }}
+        }
+    ]
+};
+var options2 = { };
+var ctx2 = document.getElementById("secondChart").getContext("2d");
+var myLineChart2 = new Chart(ctx2).Bar(data2, options2);
+
+var data3 = {
+    labels: {{ year_plot.lab|tojson|safe }},
+    datasets: [
+        {
+            label: "Year Distribution",
+            fillColor: "rgba(220,220,220,0.2)",
+            strokeColor: "rgba(220,220,220,1)",
+            pointColor: "rgba(220,220,220,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(220,220,220,1)",
+            data: {{ year_plot.val|tojson|safe }}
+        }
+    ]
+};
+var options3 = { };
+var ctx3 = document.getElementById("thirdChart").getContext("2d");
+var myLineChart3 = new Chart(ctx3).Bar(data3, options3);
+</script>
+</script>
 {% endblock %}
