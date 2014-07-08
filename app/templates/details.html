@@ -7,6 +7,20 @@
     <div class="col-md-8"><p class="lead">Results for: <strong>{{ user_input }}</strong></p></div>
     <div class="col-md-4 text-right"><a class="btn btn-default" href="{{ url_for('main_page') }}" role="button">New query</a></div>
 </div>
+<div class="row">
+    <div class="col-md-4">
+        <h4>Inmate Race Distribution</h4>
+        <canvas id="firstChart" width="360" height="360"></canvas>
+    </div>
+    <div class="col-md-4">
+        <h4>Inmate Age Distribution</h4>
+        <canvas id="secondChart" width="360" height="360"></canvas>
+    </div>
+    <div class="col-md-4">
+        <h4>Executions By Year</h4>
+        <canvas id="thirdChart" width="360" height="360"></canvas>
+    </div>
+</div>
 <table class="table table-hover">
     <thead>
         <tr>
@@ -37,4 +51,38 @@
         {% endfor %}
     </tbody>
 </table>
+<script>
+
+function createPlot(lab, dataSeries1, dataSeries2, elementId) {
+    var data = {
+        labels: lab,
+        datasets: [
+            {
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: dataSeries1
+            },
+            {
+                fillColor: "rgba(151,187,205,0.2)",
+                strokeColor: "rgba(151,187,205,1)",
+                pointColor: "rgba(151,187,205,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(151,187,205,1)",
+                data: dataSeries2
+            }
+        ]
+    };
+    var options = { };
+    var ctx = document.getElementById(elementId).getContext("2d");
+    return new Chart(ctx).Bar(data, options);
+}
+createPlot({{ all_plot.race.lab|tojson|safe }}, {{ all_plot.race.val|tojson|safe }}, {{ user_plot.race.val|tojson|safe }}, "firstChart");
+createPlot({{ all_plot.age.lab|tojson|safe }}, {{ all_plot.age.val|tojson|safe }}, {{ user_plot.age.val|tojson|safe }}, "secondChart");
+createPlot({{ all_plot.year.lab|tojson|safe }}, {{ all_plot.year.val|tojson|safe }}, {{ user_plot.year.val|tojson|safe }}, "thirdChart");
+</script>
 {% endblock %}

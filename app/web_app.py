@@ -4,18 +4,28 @@ import pandas as pd
 from result import merge_data
 from flask import request, g, escape, redirect, render_template, session, abort
 from settings import app, Data, DF_COLUMNS
+from datetime import datetime
 import numpy as np
+import sys
 
 
-def plot_data():
-    data = get_data()
-    race_series = data.data_frame.groupby('race').size()
+def plot_data(df):
+    df['year'] = df.date.apply(lambda x: x.year)
+    race_series = df.groupby('race').size()
     race_series.order(inplace=True)
+    race_series = (race_series / race_series.sum()) * 100.0
+    race_series = np.round(race_series, decimals=2)
 
     lab1 = race_series.index.tolist()
     val1 = race_series.tolist()
-    val2, lab2 = np.histogram(data.data_frame.age, bins=[0, 25, 35, 45, 55, 65, 100])
-    val3, lab3 = np.histogram(data.data_frame.year, bins=[0, 1985, 1990, 1995, 2000, 2005, 2010, 2015])
+
+    val2, lab2 = np.histogram(df.age, bins=[0, 25, 35, 45, 55, 65, 100])
+    val2 = (val2 / float(val2.sum())) * 100.0
+    val2 = np.round(val2, decimals=2)
+
+    val3, lab3 = np.histogram(df.year, bins=[0, 1985, 1990, 1995, 2000, 2005, 2010, 2015])
+    val3 = (val3 / float(val3.sum())) * 100.0
+    val3 = np.round(val3, decimals=2)
 
     return {
         'race': {'lab': lab1, 'val': val1},
@@ -33,7 +43,6 @@ def load_data():
     matrix = similarities.MatrixSimilarity.load(app.config['MATRIX'])
     model = models.LsiModel.load(app.config['MODEL'])
     df = pd.read_pickle(app.config['DATA_FRAME'])
-    df['year'] = df.date.apply(lambda x: x.year)
     return Data(matrix=matrix, model=model, dictionary=dictionary, data_frame=df)
 
 
@@ -49,7 +58,7 @@ def get_data():
 
 def get_plot_data():
     if not hasattr(g, 'plot_data'):
-        g.plot_data = plot_data()
+        g.plot_data = plot_data(get_data().data_frame)
     return g.plot_data
 
 
@@ -108,10 +117,16 @@ def user_query():
     # store session data
     session['user_input'] = user_input
 
-    if not result:
-        return render_template('empty.html', user_input=user_input)
+    if result:
+        df = pd.DataFrame(result)
+        df.date = df.date.apply(lambda x: datetime.strptime(x, "%m-%d-%Y"))
+        return render_template('details.html',
+                               result=result,
+                               user_input=user_input,
+                               all_plot=get_plot_data(),
+                               user_plot=plot_data(df))
     else:
-        return render_template('details.html', result=result, user_input=user_input)
+        return render_template('empty.html', user_input=user_input)
 
 
 @app.route('/inmate/<int:inmate_id>')

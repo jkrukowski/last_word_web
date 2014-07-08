@@ -28,62 +28,28 @@
     </div>
 </div>
 <script>
-var data = {
-    labels: {{ race_plot.lab|tojson|safe }},
-    datasets: [
-        {
-            label: "Race Distribution",
-            fillColor: "rgba(220,220,220,0.2)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(220,220,220,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
-            data: {{ race_plot.val|tojson|safe }}
-        }
-    ]
-};
-var options = { };
-var ctx = document.getElementById("firstChart").getContext("2d");
-var myLineChart = new Chart(ctx).Bar(data, options);
+function createPlot(lab, dataSeries, elementId) {
+    var data = {
+        labels: lab,
+        datasets: [
+            {
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: dataSeries
+            }
+        ]
+    };
+    var options = { };
+    var ctx = document.getElementById(elementId).getContext("2d");
+    var myLineChart = new Chart(ctx).Bar(data, options);
+}
 
-var data2 = {
-    labels: {{ age_plot.lab|tojson|safe }},
-    datasets: [
-        {
-            label: "Age Distribution",
-            fillColor: "rgba(220,220,220,0.2)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(220,220,220,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
-            data: {{ age_plot.val|tojson|safe }}
-        }
-    ]
-};
-var options2 = { };
-var ctx2 = document.getElementById("secondChart").getContext("2d");
-var myLineChart2 = new Chart(ctx2).Bar(data2, options2);
-
-var data3 = {
-    labels: {{ year_plot.lab|tojson|safe }},
-    datasets: [
-        {
-            label: "Year Distribution",
-            fillColor: "rgba(220,220,220,0.2)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(220,220,220,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
-            data: {{ year_plot.val|tojson|safe }}
-        }
-    ]
-};
-var options3 = { };
-var ctx3 = document.getElementById("thirdChart").getContext("2d");
-var myLineChart3 = new Chart(ctx3).Bar(data3, options3);
-</script>
+createPlot({{ race_plot.lab|tojson|safe }}, {{ race_plot.val|tojson|safe }}, "firstChart");
+createPlot({{ age_plot.lab|tojson|safe }}, {{ age_plot.val|tojson|safe }}, "secondChart");
+createPlot({{ year_plot.lab|tojson|safe }}, {{ year_plot.val|tojson|safe }}, "thirdChart");
 </script>
 {% endblock %}
