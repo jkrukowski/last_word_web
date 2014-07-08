@@ -5,20 +5,26 @@
 </div>
 <div class="row">
     <div class="col-md-8"><p class="lead">Results for: <strong>{{ user_input }}</strong></p></div>
-    <div class="col-md-4 text-right"><a class="btn btn-default" href="{{ url_for('main_page') }}" role="button">New query</a></div>
+    <div class="col-md-4 text-right">
+        <a id="toogleGraphs" class="btn btn-primary" href="#" role="button">Show graphs</a>
+        <a class="btn btn-default" href="{{ url_for('main_page') }}" role="button">New query</a>
+    </div>
 </div>
-<div class="row">
+<div id="graphArea" class="row" style="display: none;">
     <div class="col-md-4">
         <h4>Inmate Race Distribution</h4>
         <canvas id="firstChart" width="360" height="360"></canvas>
+        <h6 id="plot1Legend"></h6>
     </div>
     <div class="col-md-4">
         <h4>Inmate Age Distribution</h4>
         <canvas id="secondChart" width="360" height="360"></canvas>
+        <h6 id="plot2Legend"></h6>
     </div>
     <div class="col-md-4">
         <h4>Executions By Year</h4>
         <canvas id="thirdChart" width="360" height="360"></canvas>
+        <h6 id="plot3Legend"></h6>
     </div>
 </div>
 <table class="table table-hover">
@@ -53,27 +59,32 @@
 </table>
 <script>
 
-function createPlot(lab, dataSeries1, dataSeries2, elementId) {
+function createPlot(name, lab, dataSeries, labels, elementId) {
     var data = {
         labels: lab,
+        name: name,
         datasets: [
             {
-                fillColor: "rgba(220,220,220,0.2)",
+                label: labels[0],
+                lineColor: "rgba(220,220,220,1)",
+                fillColor: "rgba(220,220,220,1)",
                 strokeColor: "rgba(220,220,220,1)",
                 pointColor: "rgba(220,220,220,1)",
                 pointStrokeColor: "#fff",
                 pointHighlightFill: "#fff",
                 pointHighlightStroke: "rgba(220,220,220,1)",
-                data: dataSeries1
+                data: dataSeries[0]
             },
             {
-                fillColor: "rgba(151,187,205,0.2)",
+                label: labels[1],
+                lineColor: "rgba(151,187,205,1)",
+                fillColor: "rgba(151,187,205,1)",
                 strokeColor: "rgba(151,187,205,1)",
                 pointColor: "rgba(151,187,205,1)",
                 pointStrokeColor: "#fff",
                 pointHighlightFill: "#fff",
                 pointHighlightStroke: "rgba(151,187,205,1)",
-                data: dataSeries2
+                data: dataSeries[1]
             }
         ]
     };
@@ -81,8 +92,56 @@ function createPlot(lab, dataSeries1, dataSeries2, elementId) {
     var ctx = document.getElementById(elementId).getContext("2d");
     return new Chart(ctx).Bar(data, options);
 }
-createPlot({{ all_plot.race.lab|tojson|safe }}, {{ all_plot.race.val|tojson|safe }}, {{ user_plot.race.val|tojson|safe }}, "firstChart");
-createPlot({{ all_plot.age.lab|tojson|safe }}, {{ all_plot.age.val|tojson|safe }}, {{ user_plot.age.val|tojson|safe }}, "secondChart");
-createPlot({{ all_plot.year.lab|tojson|safe }}, {{ all_plot.year.val|tojson|safe }}, {{ user_plot.year.val|tojson|safe }}, "thirdChart");
+
+$(function() {
+
+  // add event to button
+  $('#toogleGraphs').click(function() {
+    var area = $('#graphArea');
+    if (area.is(":visible")) {
+      area.slideUp();
+      $(this).text('Show graphs');
+    } else {
+      area.slideDown();
+      $(this).text('Hide graphs');
+    }
+    return false;
+  });
+
+  // generate plots
+  var plot1 = createPlot(
+    "Race",
+    {{ all_plot.race.lab|tojson|safe }},
+    [{{ all_plot.race.val|tojson|safe }}, {{ user_plot.race.val|tojson|safe }}],
+    ["Race series 1", "Race series 2"],
+    "firstChart"
+  );
+  var plot2 = createPlot(
+    "Age",
+    {{ all_plot.age.lab|tojson|safe }},
+    [{{ all_plot.age.val|tojson|safe }}, {{ user_plot.age.val|tojson|safe }}],
+    ["Age Series 1", "Age Series 2"],
+    "secondChart"
+  );
+  var plot3 = createPlot(
+    "Year",
+    {{ all_plot.year.lab|tojson|safe }},
+    [{{ all_plot.year.val|tojson|safe }}, {{ user_plot.year.val|tojson|safe }}],
+    ["Year Plot 1", "Year Plot 2"],
+    "thirdChart"
+  );
+
+  // $("#plot1Legend").html(plot1.generateLegend());
+  // $("#plot2Legend").html(plot2.generateLegend());
+  // $("#plot3Legend").html(plot3.generateLegend());
+});
+
+
+
+
+
+
+
+
 </script>
 {% endblock %}
