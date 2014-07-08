@@ -7,6 +7,7 @@ from collections import namedtuple
 app = Flask(__name__)
 app.config.from_object(__name__)
 Data = namedtuple('Data', 'matrix model dictionary data_frame')
+Params = namedtuple('Params', 'user_input score_threshold')
 nltk.data.path.append(os.path.join(app.root_path, 'nltk_data/'))
 DF_COLUMNS = ['age', 'county', 'date', 'info_link', 'name', 'no', 'race', 'stm', 'stm_link', 'surename', 'county']
 

@@ -48,8 +48,8 @@ function createPlot(lab, dataSeries, elementId) {
     var myLineChart = new Chart(ctx).Bar(data, options);
 }
 
-createPlot({{ race_plot.lab|tojson|safe }}, {{ race_plot.val|tojson|safe }}, "firstChart");
-createPlot({{ age_plot.lab|tojson|safe }}, {{ age_plot.val|tojson|safe }}, "secondChart");
-createPlot({{ year_plot.lab|tojson|safe }}, {{ year_plot.val|tojson|safe }}, "thirdChart");
+createPlot({{ all_plot.race.lab|tojson|safe }}, {{ all_plot.race.val|tojson|safe }}, "firstChart");
+createPlot({{ all_plot.age.lab|tojson|safe }}, {{ age_plot.age.val|tojson|safe }}, "secondChart");
+createPlot({{ all_plot.year.lab|tojson|safe }}, {{ all_plot.year.val|tojson|safe }}, "thirdChart");
 </script>
 {% endblock %}

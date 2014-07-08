@@ -3,7 +3,7 @@ from textblob import TextBlob
 import pandas as pd
 from result import merge_data
 from flask import request, g, escape, redirect, render_template, session, abort
-from settings import app, Data, DF_COLUMNS
+from settings import app, Data, Params, DF_COLUMNS
 from datetime import datetime
 import numpy as np
 import sys
@@ -57,6 +57,10 @@ def get_data():
 
 
 def get_plot_data():
+    """
+    Attaches plot data to global app state
+    :return: dict with plot data
+    """
     if not hasattr(g, 'plot_data'):
         g.plot_data = plot_data(get_data().data_frame)
     return g.plot_data
@@ -88,7 +92,17 @@ def parse_input(input_data, dictionary, model):
     return model[vec_bow]
 
 
-def get_similar(vec_model, matrix, df):
+def get_params():
+    try:
+        user_input = request.args.get('q')
+        min_tresh = float(request.args.get('min', 0.001))
+        result = Params(user_input=user_input, score_threshold=min_tresh)
+    except ValueError as e:
+        result = Params(user_input=user_input, score_threshold=0.001)
+    return result
+
+
+def get_similar(vec_model, matrix, df, min_val):
     """
     Get similar documents
     :param vec_model: user input tranfsormed by gensim model
@@ -99,7 +113,7 @@ def get_similar(vec_model, matrix, df):
     sims = matrix[vec_model]
     result = [merge_data(get_record(index, df),
                          index=index,
-                         value=float(val)) for index, val in enumerate(sims) if val > 0.001]
+                         value=float(val)) for index, val in enumerate(sims) if val > min_val]
     return sorted(result, key=lambda x: -x['value'])
 
 
@@ -111,22 +125,24 @@ def page_not_found(error):
 @app.route('/query')
 def user_query():
     data = get_data()
-    user_input = request.args.get('q')
-    vec_parsed = parse_input(user_input, data.dictionary, data.model)
-    result = get_similar(vec_parsed, data.matrix, data.data_frame)
+    params = get_params()
+    vec_parsed = parse_input(params.user_input, data.dictionary, data.model)
+    result = get_similar(vec_parsed, data.matrix, data.data_frame, params.score_threshold)
     # store session data
-    session['user_input'] = user_input
+    session['user_input'] = params.user_input
 
     if result:
+        # TODO:
+        # optimize this, right now is converting data from and to padnas DataFrame
         df = pd.DataFrame(result)
         df.date = df.date.apply(lambda x: datetime.strptime(x, "%m-%d-%Y"))
         return render_template('details.html',
                                result=result,
-                               user_input=user_input,
+                               user_input=params.user_input,
                                all_plot=get_plot_data(),
                                user_plot=plot_data(df))
     else:
-        return render_template('empty.html', user_input=user_input)
+        return render_template('empty.html', user_input=params.user_input)
 
 
 @app.route('/inmate/<int:inmate_id>')
@@ -144,4 +160,4 @@ def inmate_details(inmate_id):
 @app.route('/')
 def main_page():
     pdata = get_plot_data()
-    return render_template('main.html', race_plot=pdata['race'], age_plot=pdata['age'], year_plot=pdata['year'])
+    return render_template('main.html', all_plot=pdata)
