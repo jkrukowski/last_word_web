@@ -49,7 +49,7 @@ function createPlot(lab, dataSeries, elementId) {
 }
 
 createPlot({{ all_plot.race.lab|tojson|safe }}, {{ all_plot.race.val|tojson|safe }}, "firstChart");
-createPlot({{ all_plot.age.lab|tojson|safe }}, {{ age_plot.age.val|tojson|safe }}, "secondChart");
+createPlot({{ all_plot.age.lab|tojson|safe }}, {{ all_plot.age.val|tojson|safe }}, "secondChart");
 createPlot({{ all_plot.year.lab|tojson|safe }}, {{ all_plot.year.val|tojson|safe }}, "thirdChart");
 </script>
 {% endblock %}
