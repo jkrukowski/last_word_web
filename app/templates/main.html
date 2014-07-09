@@ -13,43 +13,4 @@
         <button type="submit" class="btn btn-default">Search</button>
     </div>
 </form>
-<div class="row">
-    <div class="col-md-4">
-        <h4>Inmate Race Distribution</h4>
-        <canvas id="firstChart" width="360" height="360"></canvas>
-    </div>
-    <div class="col-md-4">
-        <h4>Inmate Age Distribution</h4>
-        <canvas id="secondChart" width="360" height="360"></canvas>
-    </div>
-    <div class="col-md-4">
-        <h4>Executions By Year</h4>
-        <canvas id="thirdChart" width="360" height="360"></canvas>
-    </div>
-</div>
-<script>
-function createPlot(lab, dataSeries, elementId) {
-    var data = {
-        labels: lab,
-        datasets: [
-            {
-                fillColor: "rgba(220,220,220,0.2)",
-                strokeColor: "rgba(220,220,220,1)",
-                pointColor: "rgba(220,220,220,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(220,220,220,1)",
-                data: dataSeries
-            }
-        ]
-    };
-    var options = { };
-    var ctx = document.getElementById(elementId).getContext("2d");
-    var myLineChart = new Chart(ctx).Bar(data, options);
-}
-
-createPlot({{ all_plot.race.lab|tojson|safe }}, {{ all_plot.race.val|tojson|safe }}, "firstChart");
-createPlot({{ all_plot.age.lab|tojson|safe }}, {{ all_plot.age.val|tojson|safe }}, "secondChart");
-createPlot({{ all_plot.year.lab|tojson|safe }}, {{ all_plot.year.val|tojson|safe }}, "thirdChart");
-</script>
 {% endblock %}

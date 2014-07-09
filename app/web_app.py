@@ -159,5 +159,4 @@ def inmate_details(inmate_id):
 
 @app.route('/')
 def main_page():
-    pdata = get_plot_data()
-    return render_template('main.html', all_plot=pdata)
+    return render_template('main.html')
