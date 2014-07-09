@@ -10,7 +10,7 @@
         <a class="btn btn-default" href="{{ url_for('main_page') }}" role="button">New query</a>
     </div>
 </div>
-<div id="graphArea" class="row" style="display: none;">
+<div id="graphArea1" class="row" style="display: none;">
     <div class="col-md-4">
         <h4>Inmate Race Distribution</h4>
         <canvas id="firstChart" width="360" height="360"></canvas>
@@ -25,6 +25,11 @@
         <h4>Executions By Year</h4>
         <canvas id="thirdChart" width="360" height="360"></canvas>
         <h6 id="plot3Legend"></h6>
+    </div>
+    <div class="col-md-12">
+        <h4>Scores By User</h4>
+        <canvas id="scoreChart" width="1140" height="360"></canvas>
+        <h6 id="plot4Legend"></h6>
     </div>
 </div>
 <table class="table table-hover">
@@ -99,7 +104,7 @@ $(function() {
 
   // add event to button
   $('#toogleGraphs').click(function() {
-    var area = $('#graphArea');
+    var area = $('#graphArea1');
     if (area.is(":visible")) {
       area.slideUp();
       $(this).text('Show graphs');
@@ -133,16 +138,35 @@ $(function() {
     "thirdChart"
   );
 
+    var data = {
+        name: "Score Plot",
+        labels: {{ score_plot.lab|tojson|safe }},
+        datasets: [
+            {
+                lineColor: "rgba(151,187,205,1)",
+                fillColor: "rgba(151,187,205,1)",
+                strokeColor: "rgba(151,187,205,1)",
+                pointColor: "rgba(151,187,205,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(151,187,205,1)",
+                data: {{ score_plot.val|tojson|safe }}
+            }
+        ]
+    };
+    var options = {
+        showTooltips: false,
+        datasetStroke: false,
+        pointDot: false,
+
+    };
+    var ctx = document.getElementById("scoreChart").getContext("2d");
+    var chart = new Chart(ctx).Line(data, options);
+
   // $("#plot1Legend").html(plot1.generateLegend());
   // $("#plot2Legend").html(plot2.generateLegend());
   // $("#plot3Legend").html(plot3.generateLegend());
 });
-
-
-
-
-
-
 
 
 </script>

@@ -128,6 +128,11 @@ def user_query():
     params = get_params()
     vec_parsed = parse_input(params.user_input, data.dictionary, data.model)
     result = get_similar(vec_parsed, data.matrix, data.data_frame, params.score_threshold)
+    score_plot = {
+        'lab': ["" for i in xrange(len(result))],
+        'val': [round(i['value'], 3) for i in result]
+    }
+    print >> sys.stderr, score_plot
     # store session data
     session['user_input'] = params.user_input
 
@@ -140,7 +145,8 @@ def user_query():
                                result=result,
                                user_input=params.user_input,
                                all_plot=get_plot_data(),
-                               user_plot=plot_data(df))
+                               user_plot=plot_data(df),
+                               score_plot=score_plot)
     else:
         return render_template('empty.html', user_input=params.user_input)
 
