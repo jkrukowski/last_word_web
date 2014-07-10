@@ -20,7 +20,6 @@ def plot_data(df):
     race_series = race_series.add(race_empty_series, fill_value=0.0)
     race_series = (race_series / race_series.sum()) * 100.0
     race_series = np.round(race_series, decimals=2)
-    print >> sys.stderr, race_series
 
     lab1 = race_series.index.tolist()
     val1 = race_series.tolist()
