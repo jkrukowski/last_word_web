@@ -132,9 +132,10 @@ def user_query():
         'lab': ["" for i in xrange(len(result))],
         'val': [round(i['value'], 3) for i in result]
     }
-    print >> sys.stderr, score_plot
+
     # store session data
     session['user_input'] = params.user_input
+    session['score_threshold'] = params.score_threshold
 
     if result:
         # TODO:
@@ -144,6 +145,7 @@ def user_query():
         return render_template('details.html',
                                result=result,
                                user_input=params.user_input,
+                               score_threshold=params.score_threshold,
                                all_plot=get_plot_data(),
                                user_plot=plot_data(df),
                                score_plot=score_plot)

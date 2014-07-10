@@ -1,12 +1,43 @@
 {% extends "layout.html" %}
 {% block body %}
+<div id="filterModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Score Filter</h4>
+      </div>
+      <form action="{{ url_for('user_query') }}" method="get" role="form">
+          <div class="modal-body">
+
+                <div class="form-group">
+                    <label for="currentQuery">Current query</label>
+                    <input id="currentQuery" type="text" class="form-control" placeholder="{{ user_input }}" value="{{ user_input }}" name="q" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="scoreFilter">Minimal query score</label>
+                    <input id="scoreFilter" type="text" class="form-control" placeholder="0.001" name="min">
+                </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button id="applyFilterButton" type="submit" class="btn btn-primary">Apply filter</button>
+          </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <div class="page-header">
     <h1>Last Words <small>of every inmate executed in Texas since 1984</small></h1>
 </div>
 <div class="row">
-    <div class="col-md-8"><p class="lead">Results for: <strong>{{ user_input }}</strong></p></div>
+    <div class="col-md-8">
+        <p class="lead">Results for: <strong>{{ user_input }}</strong>, minimal score: <strong>{{ score_threshold }}</strong></p>
+    </div>
     <div class="col-md-4 text-right">
         <a id="toogleGraphs" class="btn btn-primary" href="#" role="button">Show graphs</a>
+        <a class="btn btn-default" data-toggle="modal" data-target="#filterModal">Enter score filter</a>
         <a class="btn btn-default" href="{{ url_for('main_page') }}" role="button">New query</a>
     </div>
 </div>
@@ -101,6 +132,17 @@ function createPlot(name, lab, dataSeries, labels, elementId) {
 }
 
 $(function() {
+
+    $('#applyFilterButton').click(function() {
+        var val = parseFloat($("#scoreFilter").val());
+        var parseError = isNaN(val);
+        if (parseError) {
+            $('#scoreFilter').parent().addClass('has-error');
+        } else {
+            $('#scoreFilter').parent().removeClass('has-error');
+        }
+        return !parseError;
+    });
 
   // add event to button
   $('#toogleGraphs').click(function() {
