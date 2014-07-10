@@ -128,6 +128,11 @@ def page_not_found(error):
     return render_template('404.html', error_url=request.url)
 
 
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html', error_url=request.url)
+
+
 @app.route('/info')
 def user_info():
     return render_template('info.html')
