@@ -30,7 +30,9 @@ function createPlot(name, lab, dataSeries, labels, elementId) {
             }
         ]
     };
-    var options = { };
+    var options = {
+        legendTemplate : {{ "'<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>;width:10px;height:10px;display:inline-block;margin-right:5px;\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>'"|safe}}
+    };
     var ctx = document.getElementById(elementId).getContext("2d");
     return new Chart(ctx).Bar(data, options);
 }
@@ -110,9 +112,9 @@ $(function() {
     var ctx = document.getElementById("scoreChart").getContext("2d");
     var chart = new Chart(ctx).Line(data, options);
 
-  // $("#plot1Legend").html(plot1.generateLegend());
-  // $("#plot2Legend").html(plot2.generateLegend());
-  // $("#plot3Legend").html(plot3.generateLegend());
+    $("#plot1Legend").html(plot1.generateLegend());
+    $("#plot2Legend").html(plot2.generateLegend());
+    $("#plot3Legend").html(plot3.generateLegend());
 });
 </script>
 <div id="filterModal" class="modal fade">
@@ -158,22 +160,22 @@ $(function() {
 </div>
 <div id="graphArea1" class="row" style="display: none;">
     <div class="col-md-4">
-        <h4>Inmate Race Distribution</h4>
+        <h4>Race Distribution (%)</h4>
         <canvas id="firstChart" width="360" height="360"></canvas>
         <h6 id="plot1Legend"></h6>
     </div>
     <div class="col-md-4">
-        <h4>Inmate Age Distribution</h4>
-        <canvas id="secondChart" width="360" height="360"></canvas>
+        <h4>Age Distribution (%)</h4>
+        <canvas class="text-center" id="secondChart" width="360" height="360"></canvas>
         <h6 id="plot2Legend"></h6>
     </div>
     <div class="col-md-4">
-        <h4>Executions By Year</h4>
-        <canvas id="thirdChart" width="360" height="360"></canvas>
+        <h4>Executions By Year (%)</h4>
+        <canvas class="text-right" id="thirdChart" width="360" height="360"></canvas>
         <h6 id="plot3Legend"></h6>
     </div>
     <div class="col-md-12">
-        <h4>Scores By User</h4>
+        <h4>Score Distribution</h4>
         <canvas id="scoreChart" width="1140" height="360"></canvas>
         <h6 id="plot4Legend"></h6>
     </div>

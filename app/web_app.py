@@ -10,6 +10,9 @@ import sys
 
 
 race_empty_series = pd.Series(data=[0.0, 0.0, 0.0, 0.0], index=['Other', 'Black', 'Hispanic', 'White'])
+age_bins = [0, 25, 35, 45, 55, 65, 100]
+year_bins = [0, 1985, 1990, 1995, 2000, 2005, 2010, 2015]
+
 
 def plot_data(df):
     df['year'] = df.date.apply(lambda x: x.year)
@@ -22,11 +25,11 @@ def plot_data(df):
     lab1 = race_series.index.tolist()
     val1 = race_series.tolist()
 
-    val2, lab2 = np.histogram(df.age, bins=[0, 25, 35, 45, 55, 65, 100])
+    val2, lab2 = np.histogram(df.age, bins=age_bins)
     val2 = (val2 / float(val2.sum())) * 100.0
     val2 = np.round(val2, decimals=2)
 
-    val3, lab3 = np.histogram(df.year, bins=[0, 1985, 1990, 1995, 2000, 2005, 2010, 2015])
+    val3, lab3 = np.histogram(df.year, bins=year_bins)
     val3 = (val3 / float(val3.sum())) * 100.0
     val3 = np.round(val3, decimals=2)
 

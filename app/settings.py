@@ -12,7 +12,6 @@ nltk.data.path.append(os.path.join(app.root_path, 'nltk_data/'))
 DF_COLUMNS = ['age', 'county', 'date', 'info_link', 'name', 'no', 'race', 'stm', 'stm_link', 'surename', 'county']
 
 app.config.update(dict(
-    DEBUG=True,
     SECRET_KEY='\x00\x8ex\x06*BV\xba\x93\x9d-\x9e\xe9\x844\xaa-\xb7\x81&i\xcbJu',
     USERNAME='admin',
     PASSWORD='default',
