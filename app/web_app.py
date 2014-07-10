@@ -9,12 +9,15 @@ import numpy as np
 import sys
 
 
+race_empty_series = pd.Series(data=[0.0, 0.0, 0.0, 0.0], index=['Other', 'Black', 'Hispanic', 'White'])
+
 def plot_data(df):
     df['year'] = df.date.apply(lambda x: x.year)
     race_series = df.groupby('race').size()
-    race_series.order(inplace=True)
+    race_series = race_series.add(race_empty_series, fill_value=0.0)
     race_series = (race_series / race_series.sum()) * 100.0
     race_series = np.round(race_series, decimals=2)
+    print >> sys.stderr, race_series
 
     lab1 = race_series.index.tolist()
     val1 = race_series.tolist()
