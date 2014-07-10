@@ -69,21 +69,21 @@ $(function() {
     "Race",
     {{ all_plot.race.lab|tojson|safe }},
     [{{ all_plot.race.val|tojson|safe }}, {{ user_plot.race.val|tojson|safe }}],
-    ["Race series 1", "Race series 2"],
+    ["Race Distribution For All Inmates", "Race Distribution For Query"],
     "firstChart"
   );
   var plot2 = createPlot(
     "Age",
     {{ all_plot.age.lab|tojson|safe }},
     [{{ all_plot.age.val|tojson|safe }}, {{ user_plot.age.val|tojson|safe }}],
-    ["Age Series 1", "Age Series 2"],
+    ["Age Distribution For All Inmates", "Age Distribution For Query"],
     "secondChart"
   );
   var plot3 = createPlot(
     "Year",
     {{ all_plot.year.lab|tojson|safe }},
     [{{ all_plot.year.val|tojson|safe }}, {{ user_plot.year.val|tojson|safe }}],
-    ["Year Plot 1", "Year Plot 2"],
+    ["Executions By Year For All Inmates", "Executions By Year For Query"],
     "thirdChart"
   );
 
