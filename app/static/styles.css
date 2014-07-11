@@ -5,3 +5,7 @@ ul.bar-legend {
 ul.bar-legend li {
   list-style-type: none;
 }
+
+.carousel-inner > .item > img {
+    margin: 0 auto;
+}
