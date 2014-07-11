@@ -6,6 +6,9 @@ from flask import request, g, escape, redirect, render_template, session, abort
 from settings import app, Data, Params, DF_COLUMNS
 from datetime import datetime
 import numpy as np
+from os import listdir
+from os.path import isfile, join
+import random
 import sys
 
 
@@ -49,6 +52,17 @@ def load_data():
     model = models.LsiModel.load(app.config['MODEL'])
     df = pd.read_pickle(app.config['DATA_FRAME'])
     return Data(matrix=matrix, model=model, dictionary=dictionary, data_frame=df)
+
+
+def get_photos():
+    if not hasattr(g, 'photos'):
+        photo_path = app.config['PHOTOS_PATH']
+        g.photos = [f for f in listdir(photo_path) if isfile(join(photo_path, f))]
+    return g.photos
+
+
+def choose_photos(n=5):
+    return random.sample(get_photos(), n)
 
 
 def get_data():
@@ -136,6 +150,7 @@ def page_not_found(e):
 def user_info():
     return render_template('info.html')
 
+
 @app.route('/query')
 def user_query():
     data = get_data()
@@ -181,4 +196,4 @@ def inmate_details(inmate_id):
 
 @app.route('/')
 def main_page():
-    return render_template('main.html')
+    return render_template('main.html', photos=choose_photos())

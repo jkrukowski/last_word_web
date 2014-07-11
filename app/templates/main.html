@@ -19,6 +19,8 @@
         $('#helpButton').popover({
           trigger: 'focus'
         });
+
+        $('.carousel').carousel();
     });
 </script>
 <div class="page-header">
@@ -36,4 +38,37 @@
         <a type="button" class="btn btn-default" href="{{ url_for('user_info') }}"><span class="glyphicon glyphicon-info-sign"></span></a>
     </div>
 </form>
+<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+  <!-- Indicators -->
+  <ol class="carousel-indicators">
+    {% for item in photos %}
+        {% if loop.first %}
+        <li data-target="#carousel-example-generic" data-slide-to="{{ loop.index0 }}" class="active"></li>
+        {% else %}
+        <li data-target="#carousel-example-generic" data-slide-to="{{ loop.index0 }}"></li>
+        {% endif %}
+    {% endfor %}
+  </ol>
+
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner">
+    {% for item in photos %}
+    {% if loop.first %}
+    <div class="item active">
+    {% else %}
+    <div class="item">
+    {% endif %}
+      <img src="{{ url_for('static', filename='images/') }}{{item}}" alt="">
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Controls -->
+  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+    <span class="glyphicon glyphicon-chevron-left"></span>
+  </a>
+  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+    <span class="glyphicon glyphicon-chevron-right"></span>
+  </a>
+</div>
 {% endblock %}
