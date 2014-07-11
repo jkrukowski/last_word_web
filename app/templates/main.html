@@ -32,7 +32,7 @@
     </div>
     <div class="form-group">
         <button id="enterQueryButton" type="submit" class="btn btn-default">Search</button>
-        <button id="helpButton" type="button" class="btn btn-default popover-dismiss" data-container="body" data-toggle="popover" title="Help" data-placement="bottom" data-content="Just enter your query to search the database of last words of every inmate executed in Texas since 1984"><span class="glyphicon glyphicon-question-sign"></span></button>
+        <a tabindex="100" id="helpButton" type="button" class="btn btn-default popover-dismiss" data-container="body" data-toggle="popover" title="Help" data-placement="bottom" data-content="Just enter your query to search the database of last words of every inmate executed in Texas since 1984"><span class="glyphicon glyphicon-question-sign"></span></a>
         <a type="button" class="btn btn-default" href="{{ url_for('user_info') }}"><span class="glyphicon glyphicon-info-sign"></span></a>
     </div>
 </form>
