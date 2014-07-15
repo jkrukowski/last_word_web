@@ -14,7 +14,9 @@ import sys
 
 race_empty_series = pd.Series(data=[0.0, 0.0, 0.0, 0.0], index=['Other', 'Black', 'Hispanic', 'White'])
 age_bins = [0, 25, 35, 45, 55, 65, 100]
+age_bins_lab = ['..25', '26..35', '36..45', '46..55', '56..65', '66..']
 year_bins = [0, 1985, 1990, 1995, 2000, 2005, 2010, 2015]
+year_bins_lab = ['..85', '86..90', '91..95', '96..00', '01..05', '06..10', '11..15']
 
 
 def plot_data(df):
@@ -37,8 +39,8 @@ def plot_data(df):
 
     return {
         'race': {'lab': lab1, 'val': val1},
-        'age': {'lab': ['..25', '26..35', '36..45', '46..55', '56..65', '66..'], 'val': val2.tolist()},
-        'year': {'lab': ['..85', '86..90', '91..95', '96..00', '01..05', '06..10', '11..15'], 'val': val3.tolist()}
+        'age': {'lab': age_bins_lab, 'val': val2.tolist()},
+        'year': {'lab': year_bins_lab, 'val': val3.tolist()}
     }
 
 
@@ -189,7 +191,7 @@ def inmate_details(inmate_id):
     if 'user_input' in session:
         user_input = session['user_input']
     if item:
-        return render_template('single-inmate.html', item=item, user_input=user_input)
+        return render_template('single-inmate.html', item=item, user_input=user_input, result=[])
     else:
         return abort(404)
 
