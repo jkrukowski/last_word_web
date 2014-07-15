@@ -187,11 +187,15 @@ def user_query():
 @app.route('/inmate/<int:inmate_id>')
 def inmate_details(inmate_id):
     item = get_inmate(inmate_id)
+    data = get_data()
+    similar = [get_record(i, data.data_frame) for i in item['ms']]
+
+    print >> sys.stderr, similar
     user_input = None
     if 'user_input' in session:
         user_input = session['user_input']
     if item:
-        return render_template('single-inmate.html', item=item, user_input=user_input, result=[])
+        return render_template('single-inmate.html', item=item, user_input=user_input, similar=similar)
     else:
         return abort(404)
 
