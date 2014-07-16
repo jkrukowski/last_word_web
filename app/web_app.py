@@ -132,10 +132,17 @@ def get_similar(vec_model, matrix, df, min_val):
     :return: sorted list of similar documents
     """
     sims = matrix[vec_model]
-    result = [merge_data(get_record(index, df),
-                         index=index,
-                         value=float(val)) for index, val in enumerate(sims) if val > min_val]
-    return sorted(result, key=lambda x: -x['value'])
+    result_map = {index: float(value) for index, value in enumerate(sims) if value > min_val}
+    df['sim'] = pd.Series(result_map)
+
+    df = df.dropna()
+    return df.sort('sim', ascending=False)
+    # return df.to_dict(outtype='records')
+    #
+    # result = [merge_data(get_record(index, df),
+    #                      index=index,
+    #                      value=float(val)) for index, val in enumerate(sims) if val > min_val]
+    # return sorted(result, key=lambda x: -x['value'])
 
 
 @app.errorhandler(404)
@@ -159,26 +166,23 @@ def user_query():
     params = get_params()
     vec_parsed = parse_input(params.user_input, data.dictionary, data.model)
     result = get_similar(vec_parsed, data.matrix, data.data_frame, params.score_threshold)
-    score_plot = {
-        'lab': ["" for i in xrange(len(result))],
-        'val': [round(i['value'], 3) for i in result]
-    }
+    score_plot = {}
+    # score_plot = {
+    #     'lab': ["" for i in xrange(len(result))],
+    #     'val': [round(i['value'], 3) for i in result]
+    # }
 
     # store session data
     session['user_input'] = params.user_input
     session['score_threshold'] = params.score_threshold
 
-    if result:
-        # TODO:
-        # optimize this, right now is converting data from and to padnas DataFrame
-        df = pd.DataFrame(result)
-        df.date = df.date.apply(lambda x: datetime.strptime(x, "%m-%d-%Y"))
+    if not result.empty:
         return render_template('details.html',
-                               result=result,
+                               result=result.to_dict(outtype='records'),
                                user_input=params.user_input,
                                score_threshold=params.score_threshold,
-                               all_plot=get_plot_data(),
-                               user_plot=plot_data(df),
+                               all_plot=[], # get_plot_data(),
+                               user_plot=[], # plot_data(df),
                                score_plot=score_plot)
     else:
         return render_template('empty.html', user_input=params.user_input)
@@ -190,7 +194,6 @@ def inmate_details(inmate_id):
     data = get_data()
     similar = [get_record(i, data.data_frame) for i in item['ms']]
 
-    print >> sys.stderr, similar
     user_input = None
     if 'user_input' in session:
         user_input = session['user_input']
