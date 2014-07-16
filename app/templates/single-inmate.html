@@ -53,11 +53,11 @@
             <td></td>
             <td>{{ s.surename }}</td>
             <td>{{ s.name }}</td>
-            <td>{{ s.stm }}</td>
-            <td class="text-center"></td>
+            <td>{{ s.short_stm }}</td>
+            <td class="text-center"><a href="{{ url_for('inmate_details', inmate_id=s.index) }}"><span class="glyphicon glyphicon-file"></span></a></td>
             <td>{{ s.age }}</td>
             <td>{{ s.race }}</td>
-            <td>{{ s.date }}</td>
+            <td>{{ s.date_str }}</td>
             <td class="text-center"><a href="{{ s.info_link }}" target="_blank"><span class="glyphicon glyphicon-list-alt"></span></a></td>
         </tr>
         {% endfor %}
