@@ -1,47 +1,13 @@
 from gensim import corpora, models, similarities
 from textblob import TextBlob
 import pandas as pd
-from result import merge_data
 from flask import request, g, escape, redirect, render_template, session, abort
 from settings import app, Data, Params, DF_COLUMNS
-from datetime import datetime
-import numpy as np
 from os import listdir
 from os.path import isfile, join
 import random
+import plot
 import sys
-
-
-race_empty_series = pd.Series(data=[0.0, 0.0, 0.0, 0.0], index=['Other', 'Black', 'Hispanic', 'White'])
-age_bins = [0, 25, 35, 45, 55, 65, 100]
-age_bins_lab = ['..25', '26..35', '36..45', '46..55', '56..65', '66..']
-year_bins = [0, 1985, 1990, 1995, 2000, 2005, 2010, 2015]
-year_bins_lab = ['..85', '86..90', '91..95', '96..00', '01..05', '06..10', '11..15']
-
-
-def plot_data(df):
-    df['year'] = df.date.apply(lambda x: x.year)
-    race_series = df.groupby('race').size()
-    race_series = race_series.add(race_empty_series, fill_value=0.0)
-    race_series = (race_series / race_series.sum()) * 100.0
-    race_series = np.round(race_series, decimals=2)
-
-    lab1 = race_series.index.tolist()
-    val1 = race_series.tolist()
-
-    val2, lab2 = np.histogram(df.age, bins=age_bins)
-    val2 = (val2 / float(val2.sum())) * 100.0
-    val2 = np.round(val2, decimals=2)
-
-    val3, lab3 = np.histogram(df.year, bins=year_bins)
-    val3 = (val3 / float(val3.sum())) * 100.0
-    val3 = np.round(val3, decimals=2)
-
-    return {
-        'race': {'lab': lab1, 'val': val1},
-        'age': {'lab': age_bins_lab, 'val': val2.tolist()},
-        'year': {'lab': year_bins_lab, 'val': val3.tolist()}
-    }
 
 
 def load_data():
@@ -83,7 +49,7 @@ def get_plot_data():
     :return: dict with plot data
     """
     if not hasattr(g, 'plot_data'):
-        g.plot_data = plot_data(get_data().data_frame)
+        g.plot_data = plot.bar_plot(get_data().data_frame)
     return g.plot_data
 
 
@@ -129,20 +95,13 @@ def get_similar(vec_model, matrix, df, min_val):
     :param vec_model: user input tranfsormed by gensim model
     :param matrix: gensim similarity matrix
     :param df: pandas data frame with data
-    :return: sorted list of similar documents
+    :return: sorted DataFrame of similar documents
     """
     sims = matrix[vec_model]
     result_map = {index: float(value) for index, value in enumerate(sims) if value > min_val}
     df['sim'] = pd.Series(result_map)
-
     df = df.dropna()
     return df.sort('sim', ascending=False)
-    # return df.to_dict(outtype='records')
-    #
-    # result = [merge_data(get_record(index, df),
-    #                      index=index,
-    #                      value=float(val)) for index, val in enumerate(sims) if val > min_val]
-    # return sorted(result, key=lambda x: -x['value'])
 
 
 @app.errorhandler(404)
@@ -166,11 +125,6 @@ def user_query():
     params = get_params()
     vec_parsed = parse_input(params.user_input, data.dictionary, data.model)
     result = get_similar(vec_parsed, data.matrix, data.data_frame, params.score_threshold)
-    score_plot = {}
-    # score_plot = {
-    #     'lab': ["" for i in xrange(len(result))],
-    #     'val': [round(i['value'], 3) for i in result]
-    # }
 
     # store session data
     session['user_input'] = params.user_input
@@ -181,9 +135,9 @@ def user_query():
                                result=result.to_dict(outtype='records'),
                                user_input=params.user_input,
                                score_threshold=params.score_threshold,
-                               all_plot=[], # get_plot_data(),
-                               user_plot=[], # plot_data(df),
-                               score_plot=score_plot)
+                               all_plot=get_plot_data(),
+                               user_plot=plot.bar_plot(result),
+                               score_plot=plot.score_plot(result))
     else:
         return render_template('empty.html', user_input=params.user_input)
 
