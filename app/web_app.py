@@ -146,13 +146,16 @@ def user_query():
 def inmate_details(inmate_id):
     item = get_inmate(inmate_id)
     data = get_data()
-    similar = [get_record(i, data.data_frame) for i in item['ms']]
+    df = data.data_frame.loc[item['ms']]
 
     user_input = None
     if 'user_input' in session:
         user_input = session['user_input']
     if item:
-        return render_template('single-inmate.html', item=item, user_input=user_input, similar=similar)
+        return render_template('single-inmate.html',
+                               item=item,
+                               user_input=user_input,
+                               similar=df.to_dict(outtype='records'))
     else:
         return abort(404)
 
