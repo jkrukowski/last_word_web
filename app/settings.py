@@ -18,7 +18,7 @@ app.config.update(dict(
     PASSWORD='default',
     MATRIX=os.path.join(app.root_path, 'data/lsi.matrix'),
     MODEL=os.path.join(app.root_path, 'data/lsi.model'),
-    DATA_FRAME=os.path.join(app.root_path, 'data/exp1.pkl'),
+    DATA_FRAME=os.path.join(app.root_path, 'data/exp2.pkl'),
     DICTIONARY=os.path.join(app.root_path, 'data/dictionary.dict'),
     PHOTOS_PATH=os.path.join(app.root_path, 'static/images')
 ))
