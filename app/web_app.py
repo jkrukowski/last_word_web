@@ -147,6 +147,7 @@ def inmate_details(inmate_id):
     item = get_inmate(inmate_id)
     data = get_data()
     df = data.data_frame.loc[item['ms']]
+    df['score'] = item['nms']
 
     user_input = None
     if 'user_input' in session:
